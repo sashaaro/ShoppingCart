@@ -11,7 +11,7 @@ use Sashaaro\ShoppingCart\Cart;
  */
 class CartEvent extends Event
 {
-    const AFTER_ADD = 'busket.after_add';
+    const AFTER_ADD = 'cart.after_add';
 
     /**
      * @var \Sashaaro\ShoppingCart\Cart
