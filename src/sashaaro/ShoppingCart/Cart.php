@@ -58,7 +58,7 @@ class Cart
     }
 
     /**
-     * @todo return EntityCartPositionInterface[] (ProductInterface with quantity)
+     * @todo return CartPositionInterface[] ProductInterface with quantity
      * @return array
      */
     public function getProducts()
