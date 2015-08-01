@@ -1,0 +1,25 @@
+{
+  "name": "sashaaro/shopping-cart",
+  "description": "Shopping Cart",
+  "license": "MIT",
+  "keywords": ["shopping cart"],
+  "authors": [
+    {
+      "name": "Aleksandr Arofikin",
+      "email": "sashaaro@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.4.0",
+    "symfony/event-dispatcher": ">=2.7.0",
+    "symfony/http-foundation": ">=2.7.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "4.0.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sashaaro\\ShoppingCart\\": "src"
+    }
+  }
+}
