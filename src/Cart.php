@@ -66,6 +66,7 @@ class Cart
     public function getTotalPrice()
     {
         $total = 0;
+
         foreach($this->getPositions() as $position)
             $total += $position->getProduct()->getPrice() * $position->getQuantity();
 

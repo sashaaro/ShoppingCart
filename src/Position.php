@@ -18,7 +18,7 @@ class Position implements PositionInterface
 
     function __construct(ProductInterface $product, $quantity)
     {
-        $this->procudt = $product;
+        $this->product = $product;
         $this->quantity = $quantity;
     }
 

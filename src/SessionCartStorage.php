@@ -38,7 +38,12 @@ class SessionCartStorage implements CartStorageInterface
 
     public function getAll()
     {
-        return (array)@unserialize($this->_session->get($this->_key));
+        $positions = @unserialize($this->_session->get($this->_key));
+        if($positions) {
+            return $positions;
+        } else {
+            return [];
+        }
     }
 
     public function clear()
