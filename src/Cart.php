@@ -3,12 +3,10 @@
 namespace Sashaaro\ShoppingCart;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Sashaaro\ShoppingCart\Event\CartEvent;
 
 /**
  * Class Cart
- * @package Sashaaro\ShoppingCart
- *
+ * @author Aleksandr Arofikin <sashaaro@gmail.com>
  */
 class Cart
 {
@@ -18,9 +16,14 @@ class Cart
     private $_storage;
 
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher|null
      */
     private $_eventDispatcher;
+
+    /**
+     * @var CalculateStrategyInterface
+     */
+    private $_calculateStrategy;
 
     /**
      * @param CartStorageInterface $storage
@@ -28,6 +31,7 @@ class Cart
     public function __construct(CartStorageInterface $storage)
     {
         $this->_storage = $storage;
+        $this->_calculateStrategy = new SimpleCalculateStrategy();
     }
 
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
@@ -38,9 +42,17 @@ class Cart
     public function add(ProductInterface $product, $quantity)
     {
         $this->addPosition(new Position($product, $quantity));
+        $this->fireEvent(CartEvent::AFTER_ADD);
+    }
+
+    private function fireEvent($event)
+    {
+        static $cartEvent;
+        if(!$cartEvent)
+            $cartEvent = new CartEvent($this);
 
         if($this->_eventDispatcher)
-            $this->_eventDispatcher->dispatch(CartEvent::AFTER_ADD, new CartEvent($this));
+            $this->_eventDispatcher->dispatch($event, $cartEvent);
     }
 
     public function addPosition(PositionInterface $position)
@@ -50,7 +62,7 @@ class Cart
 
         $added = false;
         foreach($positions as &$item)
-            if($position->getProduct() === $item->getProduct() || $position->getProduct()->getId() == $item->getProduct()->getId()){
+            if($this->isEqualProducts($position->getProduct(), $item->getProduct())){
                 $item->setQuantity($item->getQuantity() + $position->getQuantity());
                 $added = true;
                 break;
@@ -63,19 +75,58 @@ class Cart
         $this->_storage->set($positions);
     }
 
+    /**
+     * @return int|float
+     */
     public function getTotalPrice()
     {
-        $total = 0;
+        return $this->_calculateStrategy->calculate($this);
+    }
+
+    public function setCalculateStrategy(CalculateStrategyInterface $strategy)
+    {
+        $this->_calculateStrategy = $strategy;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity()
+    {
+        $quantity = 0;
 
         foreach($this->getPositions() as $position)
-            $total += $position->getProduct()->getPrice() * $position->getQuantity();
+            $quantity += $position->getQuantity();
 
-        return $total;
+        return $quantity;
     }
 
     public function clear()
     {
         $this->_storage->clear();
+        $this->fireEvent(CartEvent::AFTER_CLEAR);
+    }
+
+    public function removeProduct(ProductInterface $product)
+    {
+        $positions = $this->getPositions();
+        foreach($positions as $k => $position) {
+            if($this->isEqualProducts($position->getProduct(), $product)) {
+                unset($positions[$k]);
+            }
+        }
+        $this->_storage->clear();
+        $this->_storage->set($positions);
+    }
+
+    /**
+     * @param ProductInterface $product
+     * @param ProductInterface $otherProduct
+     * @return bool
+     */
+    private function isEqualProducts(ProductInterface $product, ProductInterface $otherProduct)
+    {
+        return $product === $otherProduct || $product->getId() == $otherProduct->getId();
     }
 
     /**

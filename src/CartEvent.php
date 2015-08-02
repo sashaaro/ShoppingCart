@@ -1,6 +1,6 @@
 <?php
 
-namespace Sashaaro\ShoppingCart\Event;
+namespace Sashaaro\ShoppingCart;
 
 use Symfony\Component\EventDispatcher\Event;
 use Sashaaro\ShoppingCart\Cart;
@@ -12,6 +12,7 @@ use Sashaaro\ShoppingCart\Cart;
 class CartEvent extends Event
 {
     const AFTER_ADD = 'cart.after_add';
+    const AFTER_CLEAR = 'cart.after_clear';
 
     /**
      * @var \Sashaaro\ShoppingCart\Cart

@@ -10,7 +10,7 @@ namespace Sashaaro\ShoppingCart;
 interface ProductInterface
 {
     /**
-     * @return int
+     * @return int|float
      */
     public function getPrice();
 
