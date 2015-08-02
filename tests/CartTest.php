@@ -25,6 +25,8 @@ class CartTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue(50));
 
         $this->cart->add($productMock, 2);
+        $productMock->getPrice();
+
         $this->assertEquals($this->cart->getTotalPrice(), 100);
     }
 }

@@ -14,5 +14,8 @@ interface ProductInterface
      */
     public function getPrice();
 
+    /**
+     * @return string|int
+     */
     public function getId();
 } 
