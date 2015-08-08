@@ -72,10 +72,11 @@ class Cart
             $positions[] = $position;
         }
 
-        $this->_storage->set($positions);
+        $this->_storage->setPositions($positions);
     }
 
     /**
+     * get cost
      * @return int|float
      */
     public function getTotalPrice()
@@ -116,7 +117,7 @@ class Cart
             }
         }
         $this->_storage->clear();
-        $this->_storage->set($positions);
+        $this->_storage->setPositions($positions);
     }
 
     /**
@@ -134,6 +135,6 @@ class Cart
      */
     public function getPositions()
     {
-        return $this->_storage->getAll();
+        return $this->_storage->getPositions();
     }
 }

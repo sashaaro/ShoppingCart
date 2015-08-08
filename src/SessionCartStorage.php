@@ -21,6 +21,11 @@ class SessionCartStorage implements CartStorageInterface
     private $_key;
 
     /**
+     * @var PositionInterface[]
+     */
+    private $_positions;
+
+    /**
      * @param SessionInterface $session
      * @param string $key
      */
@@ -30,25 +35,33 @@ class SessionCartStorage implements CartStorageInterface
         $this->_key = $key;
     }
 
-
-    public function set(array $positions)
+    public function setPositions(array $positions)
     {
         $this->_session->set($this->_key, serialize($positions));
+        $this->_positions = $positions;
     }
 
-    public function getAll()
+    private function loadPositions()
     {
-        $positions = @unserialize($this->_session->get($this->_key));
-        if($positions) {
-            return $positions;
-        } else {
-            return [];
-        }
+        $positions = unserialize($this->_session->get($this->_key));
+        $this->_positions = is_array($positions) ? $positions : [];
+    }
+
+    /**
+     * @return PositionInterface[]
+     */
+    public function getPositions()
+    {
+        if(!$this->_positions)
+            $this->loadPositions();
+
+        return $this->_positions;
     }
 
     public function clear()
     {
         $this->_session->clear($this->_key);
+        $this->_positions = null;
     }
 
 } 

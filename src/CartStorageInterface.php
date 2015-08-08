@@ -7,14 +7,11 @@ interface CartStorageInterface
     /**
      * @param PositionInterface[] $position
      */
-    public function set(array $position);
-
+    public function setPositions(array $position);
     /**
      * @return PositionInterface[]
      */
-    public function getAll();
+    public function getPositions();
 
     public function clear();
-
-    //TODO: public function remove($item);
-} 
+}
