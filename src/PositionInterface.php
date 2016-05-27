@@ -2,11 +2,9 @@
 
 namespace Sashaaro\ShoppingCart;
 
-use Sashaaro\ShoppingCart\ProductInterface;
-
 /**
  * Interface PositionInterface
- * @author Aleksandr Arofkin
+ * @author Aleksandr Arofikin <sashaaro@gmail.com>
  */
 interface PositionInterface
 {

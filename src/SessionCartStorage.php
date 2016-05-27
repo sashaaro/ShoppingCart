@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 /**
  * Class SessionCartStorage
  * @package Blog\Bundle\Lib\Cart
+ * @author Aleksandr Arofikin <sashaaro@gmail.com>
  */
 class SessionCartStorage implements CartStorageInterface
 {
@@ -35,6 +36,18 @@ class SessionCartStorage implements CartStorageInterface
         $this->_key = $key;
     }
 
+    /**
+     * @return PositionInterface[]
+     */
+    public function getPositions()
+    {
+        if (!$this->_positions) {
+            $this->loadPositions();
+        }
+
+        return $this->_positions;
+    }
+
     public function setPositions(array $positions)
     {
         $this->_session->set($this->_key, serialize($positions));
@@ -47,20 +60,9 @@ class SessionCartStorage implements CartStorageInterface
         $this->_positions = is_array($positions) ? $positions : [];
     }
 
-    /**
-     * @return PositionInterface[]
-     */
-    public function getPositions()
-    {
-        if(!$this->_positions)
-            $this->loadPositions();
-
-        return $this->_positions;
-    }
-
     public function clear()
     {
-        $this->_session->clear($this->_key);
+        $this->_session->remove($this->_key);
         $this->_positions = null;
     }
 

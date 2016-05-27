@@ -16,63 +16,75 @@ class Cart
     private $_storage;
 
     /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher|null
-     */
-    private $_eventDispatcher;
-
-    /**
      * @var CalculateStrategyInterface
      */
     private $_calculateStrategy;
 
     /**
-     * @param CartStorageInterface $storage
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher|null
      */
-    public function __construct(CartStorageInterface $storage)
+    private $_eventDispatcher;
+
+    /**
+     * @var CartEvent|null
+     */
+    private $_event;
+
+    /**
+     * @param CartStorageInterface $storage
+     * @param CalculateStrategyInterface|null $calculateStrategy
+     * @param EventDispatcherInterface|null $eventDispatcher
+     */
+    public function __construct(CartStorageInterface $storage, CalculateStrategyInterface $calculateStrategy = null, EventDispatcherInterface $eventDispatcher = null)
     {
         $this->_storage = $storage;
-        $this->_calculateStrategy = new SimpleCalculateStrategy();
-    }
-
-    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher)
-    {
+        $this->_calculateStrategy = $calculateStrategy ? $calculateStrategy : new SimpleCalculateStrategy();
         $this->_eventDispatcher = $eventDispatcher;
+        if ($this->_eventDispatcher) {
+            $this->_event = new CartEvent($this);
+        }
     }
 
+    /**
+     * @param ProductInterface $product
+     * @param $quantity
+     */
     public function add(ProductInterface $product, $quantity)
     {
         $this->addPosition(new Position($product, $quantity));
         $this->fireEvent(CartEvent::AFTER_ADD);
     }
 
-    private function fireEvent($event)
-    {
-        static $cartEvent;
-        if(!$cartEvent)
-            $cartEvent = new CartEvent($this);
-
-        if($this->_eventDispatcher)
-            $this->_eventDispatcher->dispatch($event, $cartEvent);
-    }
-
+    /**
+     * @param PositionInterface $position
+     */
     public function addPosition(PositionInterface $position)
     {
         /** @var PositionInterface[] $positions */
         $positions = $this->getPositions();
 
         $added = false;
-        foreach($positions as &$item)
-            if($this->isEqualProducts($position->getProduct(), $item->getProduct())){
+        foreach ($positions as &$item) {
+            if ($this->isEqualProducts($position->getProduct(), $item->getProduct())) {
                 $item->setQuantity($item->getQuantity() + $position->getQuantity());
                 $added = true;
                 break;
             }
+        }
 
-        if(!$added) {
+        if (!$added) {
             $positions[] = $position;
         }
 
         $this->_storage->setPositions($positions);
+    }
+
+    /**
+     * @return PositionInterface[]
+     */
+    public function getPositions()
+    {
+        return $this->_storage->getPositions();
     }
 
     /**
@@ -84,11 +96,6 @@ class Cart
         return $this->_calculateStrategy->calculate($this);
     }
 
-    public function setCalculateStrategy(CalculateStrategyInterface $strategy)
-    {
-        $this->_calculateStrategy = $strategy;
-    }
-
     /**
      * @return int
      */
@@ -96,8 +103,9 @@ class Cart
     {
         $quantity = 0;
 
-        foreach($this->getPositions() as $position)
+        foreach ($this->getPositions() as $position) {
             $quantity += $position->getQuantity();
+        }
 
         return $quantity;
     }
@@ -108,11 +116,14 @@ class Cart
         $this->fireEvent(CartEvent::AFTER_CLEAR);
     }
 
+    /**
+     * @param ProductInterface $product
+     */
     public function removeProduct(ProductInterface $product)
     {
         $positions = $this->getPositions();
-        foreach($positions as $k => $position) {
-            if($this->isEqualProducts($position->getProduct(), $product)) {
+        foreach ($positions as $k => $position) {
+            if ($this->isEqualProducts($position->getProduct(), $product)) {
                 unset($positions[$k]);
             }
         }
@@ -131,10 +142,12 @@ class Cart
     }
 
     /**
-     * @return PositionInterface[]
+     * @param string $event
      */
-    public function getPositions()
+    private function fireEvent($event)
     {
-        return $this->_storage->getPositions();
+        if ($this->_eventDispatcher) {
+            $this->_eventDispatcher->dispatch($event, $this->_event);
+        }
     }
 }

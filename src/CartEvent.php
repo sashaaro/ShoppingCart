@@ -3,11 +3,11 @@
 namespace Sashaaro\ShoppingCart;
 
 use Symfony\Component\EventDispatcher\Event;
-use Sashaaro\ShoppingCart\Cart;
 
 /**
  * Class BasketEvent
  * @package Blog\Bundle\Event
+ * @author Aleksandr Arofikin <sashaaro@gmail.com>
  */
 class CartEvent extends Event
 {
@@ -15,7 +15,7 @@ class CartEvent extends Event
     const AFTER_CLEAR = 'cart.after_clear';
 
     /**
-     * @var \Sashaaro\ShoppingCart\Cart
+     * @var Cart
      */
     protected $cart;
 
@@ -25,7 +25,7 @@ class CartEvent extends Event
     }
 
     /**
-     * @return \Sashaaro\ShoppingCart\Cart
+     * @return Cart
      */
     public function getCart()
     {

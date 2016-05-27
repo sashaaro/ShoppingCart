@@ -1,14 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sasha
- * Date: 02.08.15
- * Time: 8:57
- */
 
 namespace Sashaaro\ShoppingCart;
 
-
+/**
+ * Interface CalculateStrategyInterface
+ * @package Sashaaro\ShoppingCart
+ * @author Aleksandr Arofikin <sashaaro@gmail.com>
+ */
 interface CalculateStrategyInterface
 {
     /**

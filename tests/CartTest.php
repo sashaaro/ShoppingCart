@@ -2,6 +2,7 @@
 
 /**
  * Class CartTest
+ * @author Aleksandr Arofikin <sashaaro@gmail.com>
  */
 class CartTest extends PHPUnit_Framework_TestCase
 {

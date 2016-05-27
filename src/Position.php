@@ -4,6 +4,7 @@ namespace Sashaaro\ShoppingCart;
 
 /**
  * Class Position
+ * @author Aleksandr Arofikin <sashaaro@gmail.com>
  */
 class Position implements PositionInterface
 {
@@ -31,18 +32,18 @@ class Position implements PositionInterface
     }
 
     /**
-     * @return ProductInterface
-     */
-    public function getProduct()
-    {
-        return $this->product;
-    }
-
-    /**
      * @param int $quantity
      */
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
+    }
+
+    /**
+     * @return ProductInterface
+     */
+    public function getProduct()
+    {
+        return $this->product;
     }
 }

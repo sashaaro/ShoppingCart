@@ -6,6 +6,7 @@ namespace Sashaaro\ShoppingCart;
 /**
  * Interface ProductInterface
  * @package Sashaaro\ShoppingCart
+ * @author Aleksandr Arofikin <sashaaro@gmail.com>
  */
 interface ProductInterface
 {
