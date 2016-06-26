@@ -11,7 +11,7 @@ Add package and repository to composer.json
     ....
     {
         "type": "vcs",
-        "url": "https://github.com/sashaaro/ShoppingCart"
+        "url": "https://github.com/sashaaro/ShoppingCart.git"
     }
 ]
 ```
