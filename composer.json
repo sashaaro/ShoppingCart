@@ -17,6 +17,7 @@
   "require-dev": {
     "phpunit/phpunit": "*"
   },
+  "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
       "Sashaaro\\ShoppingCart\\": "src"
